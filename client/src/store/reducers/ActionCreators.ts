@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 export const fetchTodos = () => (dispatch: AppDispatch) => {
     try {
         dispatch(todoSlice.actions.todosFetching())
-        fetch('http://localhost:8080/api/v1/tasks', {
+        fetch('https://frontend-project.starlord1art.deno.net/api/v1/tasks', {
             method: 'GET',
             mode: 'cors',
         }).then(res => res.json()).then((data: ITodo[]) => {
@@ -24,7 +24,7 @@ export const fetchTodos = () => (dispatch: AppDispatch) => {
 
 export const createTask = (title: string, description: string) => (dispatch: AppDispatch) => {
     try {
-        fetch('http://localhost:8080/api/v1/tasks', {
+        fetch('https://frontend-project.starlord1art.deno.net/api/v1/tasks', {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -49,7 +49,7 @@ export const createTask = (title: string, description: string) => (dispatch: App
 
 export const updateTask = (id: number, title: string, description: string, status: boolean) => (dispatch: AppDispatch) => {
     try {
-        fetch('http://localhost:8080/api/v1/tasks', {
+        fetch('https://frontend-project.starlord1art.deno.net/api/v1/tasks', {
             method: 'PUT',
             mode: 'cors',
             headers: {
@@ -77,7 +77,7 @@ export const updateTask = (id: number, title: string, description: string, statu
 export const deleteTask = (id: number) => (dispatch: AppDispatch) => {
     const navigate = useNavigate();
     try {
-        fetch(`http://localhost:8080/api/v1/tasks?id=${id}`, {
+        fetch(`https://frontend-project.starlord1art.deno.net/api/v1/tasks?id=${id}`, {
             method: 'DELETE',
             mode: 'cors',
         }).then(res => res.json()).then((data: string) => {

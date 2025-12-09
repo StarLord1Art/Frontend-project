@@ -108,7 +108,7 @@ serve(async (req: Request) => {
     }
 
     return serveDir(req, {
-        fsRoot: "client",
+        fsRoot: "client/build",
         urlRoot: "",
         showDirListing: false,
         enableCors: true,

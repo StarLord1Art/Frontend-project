@@ -24,7 +24,7 @@ serve(async (req: Request) => {
 
             for await (const entry of kv.list({ prefix: ["tasks"] })) {
                 data.push({
-                    id: entry.key,
+                    id: entry.key[1],
                     task: entry.value
                 });
             }
@@ -107,7 +107,9 @@ serve(async (req: Request) => {
         }
         
         if (req.method === "DELETE" && url.pathname === "/api/v1/tasks") {
+            console.log(url.searchParams.get("id"))
             const id = Number(url.searchParams.get("id"));
+            console.log(id)
 
             await kv.delete(["tasks", id]);
 

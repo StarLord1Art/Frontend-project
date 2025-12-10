@@ -1,7 +1,7 @@
 import React from 'react';
 import {Breadcrumb, Layout, Typography, theme, Divider, Button, Tag, Input} from 'antd';
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {deleteTask, updateTask} from "../store/reducers/ActionCreators";
 import {modalSlice} from "../store/reducers/slices/ModalSlice";
 import {useAppDispatch, useAppSelector} from "../hooks/redux";
@@ -17,6 +17,8 @@ const Todo: React.FC = () => {
     const {state} = useLocation()
     const dispatch = useAppDispatch();
     const {isOpen, isModalLoading, title, description} = useAppSelector(state => state.ModalReducer);
+    const {error} = useAppSelector((state) => state.TodoReducer)
+    const navigate = useNavigate();
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -64,6 +66,13 @@ const Todo: React.FC = () => {
                             }} icon={<EditOutlined/>}>Редактировать</Button>
                             <Button type={'primary'} onClick={() => {
                                 dispatch(deleteTask(state.todo.id))
+                                if (error !== '') {
+                                    navigate('/error', {
+                                        state: { error: error },
+                                    })
+                                } else {
+                                    navigate('/');
+                                }
                             }} icon={<DeleteOutlined/>} style={{marginLeft: '0.5rem'}} danger>Удалить</Button>
                         </div>
                         <ModalAntd

@@ -1,7 +1,6 @@
 import {AppDispatch} from "../store";
 import {ITodo} from "../../models/ITodo";
 import {todoSlice} from "./slices/TodoSlice";
-import {useNavigate} from "react-router-dom";
 
 export const fetchTodos = () => (dispatch: AppDispatch) => {
     try {
@@ -14,11 +13,6 @@ export const fetchTodos = () => (dispatch: AppDispatch) => {
         })
     } catch (err: any) {
         dispatch(todoSlice.actions.todosFetchError(err.message))
-
-        const navigate = useNavigate();
-        navigate('/error', {
-            state: { error: err.message },
-        });
     }
 }
 
@@ -39,11 +33,6 @@ export const createTask = (title: string, description: string) => (dispatch: App
         })
     } catch (err: any) {
         dispatch(todoSlice.actions.taskCreateError(err.message))
-
-        const navigate = useNavigate();
-        navigate('/error', {
-            state: { error: err.message },
-        })
     }
 }
 
@@ -66,11 +55,6 @@ export const updateTask = (id: number, title: string, description: string, statu
         })
     } catch (err: any) {
         dispatch(todoSlice.actions.taskUpdateError(err.message))
-
-        const navigate = useNavigate();
-        navigate('/error', {
-            state: { error: err.message },
-        })
     }
 }
 
@@ -84,10 +68,5 @@ export const deleteTask = (id: number) => (dispatch: AppDispatch) => {
         })
     } catch (err: any) {
         dispatch(todoSlice.actions.taskDeleteError(err.message))
-
-        const navigate = useNavigate();
-        navigate('/error', {
-            state: { error: err.message },
-        })
     }
 }

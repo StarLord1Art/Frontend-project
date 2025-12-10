@@ -92,8 +92,6 @@ serve(async (req: Request) => {
             // });
             // data.tags.push(...response.message.content.split(", "));
 
-            console.log(body)
-            console.log(body.id)
             await kv.set(["tasks", body.id], data);
 
             return new Response(JSON.stringify({id: body.id, task: data}), {
@@ -107,9 +105,7 @@ serve(async (req: Request) => {
         }
         
         if (req.method === "DELETE" && url.pathname === "/api/v1/tasks") {
-            console.log(url.searchParams.get("id"))
             const id = Number(url.searchParams.get("id"));
-            console.log(id)
 
             await kv.delete(["tasks", id]);
 

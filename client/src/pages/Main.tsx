@@ -20,7 +20,7 @@ const Main: React.FC = () => {
 
     useEffect(() => {
         dispatch(fetchTodos())
-    }, [])
+    }, [dispatch])
 
     const {
         token: { colorBgContainer, borderRadiusLG },

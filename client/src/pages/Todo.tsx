@@ -80,6 +80,15 @@ const Todo: React.FC = () => {
                             open={isOpen}
                             onOk={() => {
                                 dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed))
+                                if (error !== '') {
+                                    dispatch(modalSlice.actions.closeModal())
+                                    navigate('/error', {
+                                        state: { error: error },
+                                    })
+                                } else {
+                                    dispatch(modalSlice.actions.closeModal())
+                                    navigate('/');
+                                }
                             }}
                             onCancel={() => {
                                 dispatch(modalSlice.actions.closeModal())
@@ -92,6 +101,15 @@ const Todo: React.FC = () => {
                                 </Button>,
                                 <Button key="submit" type="primary" loading={isModalLoading} onClick={() => {
                                     dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed))
+                                    if (error !== '') {
+                                        dispatch(modalSlice.actions.closeModal())
+                                        navigate('/error', {
+                                            state: { error: error },
+                                        })
+                                    } else {
+                                        dispatch(modalSlice.actions.closeModal())
+                                        navigate('/');
+                                    }
                                 }}>
                                     Редактировать
                                 </Button>

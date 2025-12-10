@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Breadcrumb, Layout, theme, Typography, Button, Input} from 'antd';
 import {PlusOutlined} from "@ant-design/icons";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks/redux";
 import {createTask, fetchTodos} from "../store/reducers/ActionCreators";
 import {modalSlice} from "../store/reducers/slices/ModalSlice";
@@ -17,6 +17,8 @@ const { TextArea } = Input;
 const Main: React.FC = () => {
     const dispatch = useAppDispatch();
     const {isOpen, title, description} = useAppSelector(state => state.ModalReducer);
+    const {error} = useAppSelector(state => state.TodoReducer)
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchTodos())
@@ -57,6 +59,14 @@ const Main: React.FC = () => {
                             open={isOpen}
                             onOk={() => {
                                 dispatch(createTask(title, description))
+                                if (error !== '') {
+                                    dispatch(modalSlice.actions.closeModal())
+                                    navigate('/error', {
+                                        state: {error: error},
+                                    })
+                                } else {
+                                    dispatch(modalSlice.actions.closeModal())
+                                }
                             }}
                             onCancel={() => {
                                 dispatch(modalSlice.actions.closeModal())
@@ -69,6 +79,14 @@ const Main: React.FC = () => {
                                 </Button>,
                                 <Button key="submit" type="primary" onClick={() => {
                                     dispatch(createTask(title, description))
+                                    if (error !== '') {
+                                        dispatch(modalSlice.actions.closeModal())
+                                        navigate('/error', {
+                                            state: {error: error},
+                                        })
+                                    } else {
+                                        dispatch(modalSlice.actions.closeModal())
+                                    }
                                 }}>
                                     Создать
                                 </Button>

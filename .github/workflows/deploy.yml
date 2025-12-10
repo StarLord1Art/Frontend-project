@@ -38,7 +38,7 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "frontend-pr-20"
-          entrypoint: ".../server/main.ts"
-          root: "build"
+          entrypoint: "server/main.ts"
+          root: ""
           
           

@@ -75,19 +75,17 @@ export const updateTask = (id: number, title: string, description: string, statu
 }
 
 export const deleteTask = (id: number) => (dispatch: AppDispatch) => {
-    const navigate = useNavigate();
     try {
         fetch(`/api/v1/tasks?id=${id}`, {
             method: 'DELETE',
             mode: 'cors',
         }).then(res => res.json()).then((data: string) => {
             dispatch(todoSlice.actions.taskDeleteSuccess(id))
-
-            navigate('/')
         })
     } catch (err: any) {
         dispatch(todoSlice.actions.taskDeleteError(err.message))
 
+        const navigate = useNavigate();
         navigate('/error', {
             state: { error: err.message },
         })

@@ -92,6 +92,8 @@ serve(async (req: Request) => {
             // });
             // data.tags.push(...response.message.content.split(", "));
 
+            console.log(body)
+            console.log(body.id)
             await kv.set(["tasks", body.id], data);
 
             return new Response(JSON.stringify({id: body.id, task: data}), {

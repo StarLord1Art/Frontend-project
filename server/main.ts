@@ -92,12 +92,16 @@ serve(async (req: Request) => {
                 tags: []
             };
 
-            const response = await ollama.chat({
-                model: 'gpt-oss:120b',
-                messages: [{ role: 'user', content: `Описание задачи: ${body.newTitle} ${body.newDescription}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
-                stream: false,
-            });
-            data.tags.push(...response.message.content.split(","));
+            if (!body.isStatusUpdated) {
+                const response = await ollama.chat({
+                    model: 'gpt-oss:120b',
+                    messages: [{ role: 'user', content: `Описание задачи: ${body.newTitle} ${body.newDescription}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
+                    stream: false,
+                });
+                data.tags.push(...response.message.content.split(","));
+            } else {
+                data.tags.push(...body.tags);
+            }
 
             await kv.set(["tasks", body.id], data);
 

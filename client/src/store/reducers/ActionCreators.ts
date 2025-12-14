@@ -63,7 +63,7 @@ export const deleteTask = (id: number) => (dispatch: AppDispatch) => {
         fetch(`/api/v1/tasks?id=${id}`, {
             method: 'DELETE',
             mode: 'cors',
-        }).then(res => res.json()).then((data: string) => {
+        }).then(res => res.text()).then(() => {
             dispatch(todoSlice.actions.taskDeleteSuccess(id))
         })
     } catch (err: any) {

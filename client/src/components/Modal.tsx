@@ -4,6 +4,7 @@ import {Modal} from "antd";
 interface ModalProps {
     title: string;
     open: boolean;
+    confirmLoading: boolean;
     onOk: () => void;
     onCancel: () => void;
     footer: React.ReactNode[];
@@ -13,6 +14,7 @@ interface ModalProps {
 const ModalAntd: React.FC<{
     title: string;
     open: boolean;
+    confirmLoading: boolean;
     onOk: () => void;
     onCancel: () => void;
     footer: React.ReactNode[];
@@ -22,6 +24,7 @@ const ModalAntd: React.FC<{
         <Modal
             title={props.title}
             open={props.open}
+            confirmLoading={props.confirmLoading}
             onOk={props.onOk}
             onCancel={props.onCancel}
             footer={props.footer}

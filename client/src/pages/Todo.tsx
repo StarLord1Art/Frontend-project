@@ -24,6 +24,26 @@ const Todo: React.FC = () => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
+    function handleCancel() {
+        dispatch(modalSlice.actions.closeModal())
+    }
+
+    function updateTodo() {
+        dispatch(modalSlice.actions.changeIsModalLoading(true))
+        dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed))
+        if (error !== '') {
+            dispatch(modalSlice.actions.changeIsModalLoading(false))
+            dispatch(modalSlice.actions.closeModal())
+            navigate('/error', {
+                state: { error: error },
+            })
+        } else {
+            dispatch(modalSlice.actions.changeIsModalLoading(false))
+            dispatch(modalSlice.actions.closeModal())
+            navigate('/');
+        }
+    }
+
     return (
         <Layout>
             <HeaderAntd/>
@@ -78,39 +98,14 @@ const Todo: React.FC = () => {
                         <ModalAntd
                             title={"Редактирование задачи"}
                             open={isOpen}
-                            onOk={() => {
-                                dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed))
-                                if (error !== '') {
-                                    dispatch(modalSlice.actions.closeModal())
-                                    navigate('/error', {
-                                        state: { error: error },
-                                    })
-                                } else {
-                                    dispatch(modalSlice.actions.closeModal())
-                                    navigate('/');
-                                }
-                            }}
-                            onCancel={() => {
-                                dispatch(modalSlice.actions.closeModal())
-                            }}
+                            confirmLoading={isModalLoading}
+                            onOk={updateTodo}
+                            onCancel={handleCancel}
                             footer={[
-                                <Button key="back" onClick={() => {
-                                    dispatch(modalSlice.actions.closeModal())
-                                }}>
+                                <Button key="back" onClick={handleCancel}>
                                     Отменить
                                 </Button>,
-                                <Button key="submit" type="primary" loading={isModalLoading} onClick={() => {
-                                    dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed))
-                                    if (error !== '') {
-                                        dispatch(modalSlice.actions.closeModal())
-                                        navigate('/error', {
-                                            state: { error: error },
-                                        })
-                                    } else {
-                                        dispatch(modalSlice.actions.closeModal())
-                                        navigate('/');
-                                    }
-                                }}>
+                                <Button key="submit" type="primary" loading={isModalLoading} onClick={updateTodo}>
                                     Редактировать
                                 </Button>
                             ]}

@@ -32,6 +32,9 @@ export const modalSlice = createSlice({
         changeDescription(state, action: PayloadAction<string>) {
             state.description = action.payload;
         },
+        changeIsModalLoading(state, action: PayloadAction<boolean>) {
+            state.isModalLoading = action.payload;
+        }
     }
 })
 

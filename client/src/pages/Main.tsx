@@ -16,7 +16,7 @@ const { TextArea } = Input;
 
 const Main: React.FC = () => {
     const dispatch = useAppDispatch();
-    const {isOpen, title, description} = useAppSelector(state => state.ModalReducer);
+    const {isOpen, isModalLoading, title, description} = useAppSelector(state => state.ModalReducer);
     const {error} = useAppSelector(state => state.TodoReducer)
     const navigate = useNavigate();
 
@@ -27,6 +27,25 @@ const Main: React.FC = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+
+    function handleCancel() {
+        dispatch(modalSlice.actions.closeModal())
+    }
+
+    function createTodo() {
+        dispatch(modalSlice.actions.changeIsModalLoading(true))
+        dispatch(createTask(title, description))
+        if (error !== '') {
+            dispatch(modalSlice.actions.changeIsModalLoading(false))
+            dispatch(modalSlice.actions.closeModal())
+            navigate('/error', {
+                state: {error: error},
+            })
+        } else {
+            dispatch(modalSlice.actions.changeIsModalLoading(false))
+            dispatch(modalSlice.actions.closeModal())
+        }
+    }
 
     return (
         <Layout>
@@ -57,37 +76,14 @@ const Main: React.FC = () => {
                         <ModalAntd
                             title={"Создание задачи"}
                             open={isOpen}
-                            onOk={() => {
-                                dispatch(createTask(title, description))
-                                if (error !== '') {
-                                    dispatch(modalSlice.actions.closeModal())
-                                    navigate('/error', {
-                                        state: {error: error},
-                                    })
-                                } else {
-                                    dispatch(modalSlice.actions.closeModal())
-                                }
-                            }}
-                            onCancel={() => {
-                                dispatch(modalSlice.actions.closeModal())
-                            }}
+                            confirmLoading={isModalLoading}
+                            onOk={createTodo}
+                            onCancel={handleCancel}
                             footer={[
-                                <Button key="back" onClick={() => {
-                                    dispatch(modalSlice.actions.closeModal())
-                                }}>
+                                <Button key="back" onClick={handleCancel}>
                                     Отменить
                                 </Button>,
-                                <Button key="submit" type="primary" onClick={() => {
-                                    dispatch(createTask(title, description))
-                                    if (error !== '') {
-                                        dispatch(modalSlice.actions.closeModal())
-                                        navigate('/error', {
-                                            state: {error: error},
-                                        })
-                                    } else {
-                                        dispatch(modalSlice.actions.closeModal())
-                                    }
-                                }}>
+                                <Button key="submit" type="primary" loading={isModalLoading} onClick={createTodo}>
                                     Создать
                                 </Button>
                             ]}

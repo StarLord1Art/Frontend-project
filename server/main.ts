@@ -59,7 +59,7 @@ serve(async (req: Request) => {
             };
 
             const response = await ollama.chat({
-                model: 'llama3.1',
+                model: 'gpt-oss:120b',
                 messages: [{ role: 'user', content: `Описание задачи: ${body.title} ${body.description}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
                 stream: false,
             });
@@ -93,7 +93,7 @@ serve(async (req: Request) => {
             };
 
             const response = await ollama.chat({
-                model: 'llama3.1',
+                model: 'gpt-oss:120b',
                 messages: [{ role: 'user', content: `Описание задачи: ${body.title} ${body.description}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
                 stream: false,
             });

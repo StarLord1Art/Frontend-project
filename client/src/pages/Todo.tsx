@@ -30,7 +30,7 @@ const Todo: React.FC = () => {
 
     function updateTodo() {
         dispatch(modalSlice.actions.changeIsModalLoading(true))
-        dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed))
+        dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed, false))
         if (error !== '') {
             dispatch(modalSlice.actions.changeIsModalLoading(false))
             dispatch(modalSlice.actions.closeModal())

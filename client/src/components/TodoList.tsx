@@ -30,7 +30,7 @@ const TodoList: React.FC = () => {
                         renderItem={todo => (
                             <List.Item key={todo.id} style={{display: 'flex', justifyContent: 'left'}}>
                                 <Checkbox checked={todo.task.completed} onClick={() => {
-                                    dispatch(updateTask(todo.id, todo.task.title, todo.task.description, !todo.task.completed))
+                                    dispatch(updateTask(todo.id, todo.task.title, todo.task.description, !todo.task.completed, true))
                                 }}/>
                                 <span style={{cursor: 'pointer', marginLeft: '0.5rem'}} onClick={() => {
                                     navigate(`todo/${todo.id}`, {

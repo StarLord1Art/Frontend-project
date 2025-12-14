@@ -1,7 +1,12 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.224.0/http/file_server.ts";
+import { Ollama } from 'ollama'
 
 const kv = await Deno.openKv();
+const ollama = new Ollama({
+    host: 'https://ollama.com',
+    headers: { Authorization: 'Bearer ' + Deno.env.get("OLLAMA_API_KEY") },
+})
 
 serve(async (req: Request) => {
     const url = new URL(req.url);
@@ -53,11 +58,12 @@ serve(async (req: Request) => {
                 tags: []
             };
 
-            // const response = await ollama.chat({
-            //     model: 'llama3.1',
-            //     messages: [{ role: 'user', content: `Описание задачи: ${body.title} ${body.description} На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
-            // });
-            // data.tags.push(...response.message.content.split(", "));
+            const response = await ollama.chat({
+                model: 'llama3.1',
+                messages: [{ role: 'user', content: `Описание задачи: ${body.title} ${body.description}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
+                stream: false,
+            });
+            data.tags.push(...response.message.content.split(", "));
 
             const id = Date.now();
             await kv.set(["tasks", id], data);
@@ -86,11 +92,12 @@ serve(async (req: Request) => {
                 tags: []
             };
 
-            // const response = await ollama.chat({
-            //     model: 'llama3.1',
-            //     messages: [{ role: 'user', content: `Описание задачи: ${body.newTitle} ${body.newDescription}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
-            // });
-            // data.tags.push(...response.message.content.split(", "));
+            const response = await ollama.chat({
+                model: 'llama3.1',
+                messages: [{ role: 'user', content: `Описание задачи: ${body.title} ${body.description}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
+                stream: false,
+            });
+            data.tags.push(...response.message.content.split(", "));
 
             await kv.set(["tasks", body.id], data);
 

@@ -36,7 +36,7 @@ export const createTask = (title: string, description: string) => (dispatch: App
     }
 }
 
-export const updateTask = (id: number, title: string, description: string, status: boolean) => (dispatch: AppDispatch) => {
+export const updateTask = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean) => (dispatch: AppDispatch) => {
     try {
         fetch('/api/v1/tasks', {
             method: 'PUT',
@@ -49,6 +49,7 @@ export const updateTask = (id: number, title: string, description: string, statu
                 newTitle: title,
                 newDescription: description,
                 newCompleted: status,
+                isStatusUpdated: isStatusUpdated,
             })
         }).then(res => res.json()).then((data: ITodo) => {
             dispatch(todoSlice.actions.taskUpdateSuccess(data))

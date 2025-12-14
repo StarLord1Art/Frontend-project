@@ -63,7 +63,7 @@ serve(async (req: Request) => {
                 messages: [{ role: 'user', content: `Описание задачи: ${body.title} ${body.description}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
                 stream: false,
             });
-            data.tags.push(...response.message.content.split(", "));
+            data.tags.push(...response.message.content.split(","));
 
             const id = Date.now();
             await kv.set(["tasks", id], data);
@@ -94,10 +94,10 @@ serve(async (req: Request) => {
 
             const response = await ollama.chat({
                 model: 'gpt-oss:120b',
-                messages: [{ role: 'user', content: `Описание задачи: ${body.title} ${body.description}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
+                messages: [{ role: 'user', content: `Описание задачи: ${body.newTitle} ${body.newDescription}. На основании приведённого описания задачи, придумай короткие (длина — одно слово) и ёмкие теги для её классификации. Просто перечисли теги через запятую, без лишних слов.` }],
                 stream: false,
             });
-            data.tags.push(...response.message.content.split(", "));
+            data.tags.push(...response.message.content.split(","));
 
             await kv.set(["tasks", body.id], data);
 

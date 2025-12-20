@@ -1,5 +1,5 @@
 import React from 'react';
-import {Breadcrumb, Layout, Typography, theme, Divider, Button, Tag, Input} from 'antd';
+import {Breadcrumb, Layout, Typography, theme, Divider, Button, Tag, Input, message} from 'antd';
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {deleteTask, updateTask} from "../store/reducers/ActionCreators";
@@ -19,6 +19,7 @@ const Todo: React.FC = () => {
     const {isOpen, isModalLoading, title, description} = useAppSelector(state => state.ModalReducer);
     const {error} = useAppSelector((state) => state.TodoReducer)
     const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -28,7 +29,18 @@ const Todo: React.FC = () => {
         dispatch(modalSlice.actions.closeModal())
     }
 
+    const showError = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Пожалуйста, введите новое название задачи!',
+        });
+    }
+
     function updateTodo() {
+        if (title.trim() === "") {
+            showError();
+            return
+        }
         dispatch(modalSlice.actions.changeIsModalLoading(true))
         dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed, false, state.todo.task.tags))
         if (error !== '') {
@@ -46,6 +58,7 @@ const Todo: React.FC = () => {
 
     return (
         <Layout>
+            {contextHolder}
             <HeaderAntd/>
             <Content style={{ padding: '0 48px' }}>
                 <Breadcrumb

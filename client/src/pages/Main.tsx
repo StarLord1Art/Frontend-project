@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Breadcrumb, Layout, theme, Typography, Button, Input} from 'antd';
+import {Breadcrumb, Layout, theme, Typography, Button, Input, message} from 'antd';
 import {PlusOutlined} from "@ant-design/icons";
 import {Link, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks/redux";
@@ -19,6 +19,7 @@ const Main: React.FC = () => {
     const {isOpen, isModalLoading, title, description} = useAppSelector(state => state.ModalReducer);
     const {error} = useAppSelector(state => state.TodoReducer)
     const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         dispatch(fetchTodos())
@@ -32,7 +33,18 @@ const Main: React.FC = () => {
         dispatch(modalSlice.actions.closeModal())
     }
 
+    const showError = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Пожалуйста, введите название задачи!',
+        });
+    }
+
     function createTodo() {
+        if (title.trim() === "") {
+            showError();
+            return
+        }
         dispatch(modalSlice.actions.changeIsModalLoading(true))
         dispatch(createTask(title, description))
         if (error !== '') {
@@ -49,6 +61,7 @@ const Main: React.FC = () => {
 
     return (
         <Layout>
+            {contextHolder}
             <HeaderAntd/>
             <Content style={{ padding: '0 48px' }}>
                 <Breadcrumb

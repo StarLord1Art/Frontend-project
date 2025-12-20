@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-interface ModalState {
+export interface ModalState {
     isOpen: boolean,
     isModalLoading: boolean,
     title: string,

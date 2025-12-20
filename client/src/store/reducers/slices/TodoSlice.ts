@@ -1,7 +1,7 @@
 import {ITodo} from "../../../models/ITodo";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-interface TodoState {
+export interface TodoState {
     todos: ITodo[],
     isLoading: boolean,
     error: string

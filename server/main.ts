@@ -28,7 +28,6 @@ serve(async (req: Request) => {
             const data = [];
 
             for await (const entry of kv.list({ prefix: ["tasks"] })) {
-                console.log(entry.key[1]);
                 data.push({
                     id: entry.key[1],
                     task: entry.value

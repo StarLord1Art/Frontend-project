@@ -1,46 +1,63 @@
-# Getting Started with Create React App
+# ToDo List с AI-классификацией
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Описание приложения
 
-## Available Scripts
+"Умный" список дел с автоматической классификацией (добавлением тегов) задач пользователя с помощью ИИ. Приложение помогает организовать задачи, автоматически анализируя их содержание и назначая соответствующие теги для удобной категоризации. [Ссылка на презентацию приложения](https://github.com/StarLord1Art/Frontend-project-presentation)
 
-In the project directory (./client), you can run:
+## Как получить исходники
 
-### `npm start`
+```bash
+git clone https://github.com/StarLord1Art/Frontend-project.git .
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Требования
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **Node.js 22** - [Страница загрузки и установки](https://nodejs.org/)
+- **Deno** - [Официальный сайт и документация](https://deno.com/)
+- **Deno KV** - Удаленная key-value база данных [Документация Deno KV](https://docs.deno.com/deploy/kv/)
 
-### `npm test`
+## Запуск проекта
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Локальный запуск React-приложения:
 
-### `npm run build`
+1. Установите зависимости:
+```bash
+cd client
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Запустите приложение:
+```bash
+npm start
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Откройте приложение в браузере по адресу: `http://localhost:3000`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Запуск тестов
 
-### `npm run eject`
+Для запуска unit-тестов, написанных с использованием библиотеки Jest и тестирующих работу двух главных reducers приложения, выполните:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```bash
+npm test
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Основной бизнес-кейс
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc.) right into your project so you have full control over them. All the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+На уже развернутом хостинге ([ссылка на приложение](https://frontend-pr-20.deno.dev)) выполните следующие шаги:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However, we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+1. **Создайте задачу** - на главной странице нажмите "Создать задачу", введите название и описание задачи и сохраните её
+2. **Перейдите на страницу задачи** - кликните на название созданной задачи в списке
+3. **Отредактируйте задачу** - на странице задачи нажмите "Редактировать", внесите изменения и сохраните их
+4. **Отметьте статус задачи как "Выполнено"** - вернитесь на главную страницу и отметьте задачу как выполненную
+5. **Удалите задачу** - перейдите снова на страницу задачи и нажмите "Удалить"
 
-## Learn More
+## Структура приложения
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+src/
+├── components/    # Визуальные React компоненты
+├── pages/         # Страницы приложения
+├── hooks/         # Кастомные хуки
+├── store/         # Redux store приложения
+└── models/        # Модели данных
+```

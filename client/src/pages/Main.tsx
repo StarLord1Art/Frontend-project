@@ -22,7 +22,7 @@ const Main: React.FC = () => {
 
     useEffect(() => {
         dispatch(fetchTodos(navigate))
-    }, [dispatch])
+    }, [dispatch, navigate])
 
     const {
         token: { colorBgContainer, borderRadiusLG },

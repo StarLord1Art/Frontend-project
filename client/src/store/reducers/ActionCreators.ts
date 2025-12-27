@@ -2,8 +2,9 @@ import {AppDispatch} from "../store";
 import {ITodo} from "../../models/ITodo";
 import {todoSlice} from "./slices/TodoSlice";
 import {modalSlice} from "./slices/ModalSlice";
+import {NavigateFunction} from "react-router-dom";
 
-export const fetchTodos = () => (dispatch: AppDispatch) => {
+export const fetchTodos = (navigate: NavigateFunction) => (dispatch: AppDispatch) => {
     try {
         dispatch(todoSlice.actions.todosFetching())
         fetch('/api/v1/tasks', {
@@ -14,10 +15,11 @@ export const fetchTodos = () => (dispatch: AppDispatch) => {
         })
     } catch (err: any) {
         dispatch(todoSlice.actions.todosFetchError(err.message))
+        navigate('/error')
     }
 }
 
-export const createTask = (title: string, description: string) => (dispatch: AppDispatch) => {
+export const createTask = (title: string, description: string, navigate: NavigateFunction) => (dispatch: AppDispatch) => {
     try {
         dispatch(modalSlice.actions.changeIsModalLoading(true))
         fetch('/api/v1/tasks', {
@@ -39,10 +41,11 @@ export const createTask = (title: string, description: string) => (dispatch: App
         dispatch(modalSlice.actions.changeIsModalLoading(false))
         dispatch(modalSlice.actions.closeModal())
         dispatch(todoSlice.actions.taskCreateError(err.message))
+        navigate('/error')
     }
 }
 
-export const updateTask = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean, tags: string[]) => (dispatch: AppDispatch) => {
+export const updateTask = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean, tags: string[], navigate: NavigateFunction) => (dispatch: AppDispatch) => {
     try {
         dispatch(modalSlice.actions.changeIsModalLoading(true))
         fetch('/api/v1/tasks', {
@@ -63,23 +66,29 @@ export const updateTask = (id: number, title: string, description: string, statu
             dispatch(modalSlice.actions.changeIsModalLoading(false))
             dispatch(modalSlice.actions.closeModal())
             dispatch(todoSlice.actions.taskUpdateSuccess(data))
+            if (!isStatusUpdated) {
+                navigate('/')
+            }
         })
     } catch (err: any) {
         dispatch(modalSlice.actions.changeIsModalLoading(false))
         dispatch(modalSlice.actions.closeModal())
         dispatch(todoSlice.actions.taskUpdateError(err.message))
+        navigate('/error')
     }
 }
 
-export const deleteTask = (id: number) => (dispatch: AppDispatch) => {
+export const deleteTask = (id: number, navigate: NavigateFunction) => (dispatch: AppDispatch) => {
     try {
         fetch(`/api/v1/tasks?id=${id}`, {
             method: 'DELETE',
             mode: 'cors',
         }).then(res => res.text()).then(() => {
             dispatch(todoSlice.actions.taskDeleteSuccess(id))
+            navigate('/')
         })
     } catch (err: any) {
         dispatch(todoSlice.actions.taskDeleteError(err.message))
+        navigate('/error')
     }
 }

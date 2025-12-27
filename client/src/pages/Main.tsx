@@ -17,12 +17,11 @@ const { TextArea } = Input;
 const Main: React.FC = () => {
     const dispatch = useAppDispatch();
     const {isOpen, isModalLoading, title, description} = useAppSelector(state => state.ModalReducer);
-    const {error} = useAppSelector(state => state.TodoReducer)
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
-        dispatch(fetchTodos())
+        dispatch(fetchTodos(navigate))
     }, [dispatch])
 
     const {
@@ -45,12 +44,7 @@ const Main: React.FC = () => {
             showError();
             return
         }
-        dispatch(createTask(title, description))
-        if (error !== '') {
-            navigate('/error', {
-                state: {error: error},
-            })
-        }
+        dispatch(createTask(title, description, navigate))
     }
 
     return (

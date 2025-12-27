@@ -17,7 +17,6 @@ const Todo: React.FC = () => {
     const {state} = useLocation()
     const dispatch = useAppDispatch();
     const {isOpen, isModalLoading, title, description} = useAppSelector(state => state.ModalReducer);
-    const {error} = useAppSelector((state) => state.TodoReducer)
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -41,14 +40,7 @@ const Todo: React.FC = () => {
             showError();
             return
         }
-        dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed, false, state.todo.task.tags))
-        if (error !== '') {
-            navigate('/error', {
-                state: { error: error },
-            })
-        } else {
-            // navigate('/');
-        }
+        dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed, false, state.todo.task.tags, navigate))
     }
 
     return (
@@ -93,14 +85,7 @@ const Todo: React.FC = () => {
                                 dispatch(modalSlice.actions.openModal())
                             }} icon={<EditOutlined/>}>Редактировать</Button>
                             <Button type={'primary'} onClick={() => {
-                                dispatch(deleteTask(state.todo.id))
-                                if (error !== '') {
-                                    navigate('/error', {
-                                        state: { error: error },
-                                    })
-                                } else {
-                                    navigate('/');
-                                }
+                                dispatch(deleteTask(state.todo.id, navigate))
                             }} icon={<DeleteOutlined/>} style={{marginLeft: '0.5rem'}} danger>Удалить</Button>
                         </div>
                         <ModalAntd

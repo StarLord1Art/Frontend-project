@@ -212,17 +212,19 @@ describe('modalReducer', () => {
     });
 
     describe('changeIsModalLoading', () => {
-        it('should change loading state to true', () => {
+        it('should not change loading state to true when modal is not open', () => {
             const action = modalSlice.actions.changeIsModalLoading(true);
             const newState = modalReducer(initialState, action);
 
-            expect(newState.isModalLoading).toBe(true);
+            expect(newState.isModalLoading).toBe(false);
         });
 
-        it('should change loading state to false', () => {
+        it('should change loading state to false when modal is open', () => {
             const stateWithLoading = {
-                ...initialState,
+                isOpen: true,
                 isModalLoading: true,
+                title: 'Title',
+                description: 'Description',
             };
 
             const action = modalSlice.actions.changeIsModalLoading(false);
@@ -231,7 +233,7 @@ describe('modalReducer', () => {
             expect(newState.isModalLoading).toBe(false);
         });
 
-        it('should set loading to true when modal is open', () => {
+        it('should change loading state to true when modal is open', () => {
             const stateWithOpenModal = {
                 isOpen: true,
                 isModalLoading: false,

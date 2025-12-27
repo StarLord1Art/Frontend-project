@@ -45,17 +45,11 @@ const Main: React.FC = () => {
             showError();
             return
         }
-        dispatch(modalSlice.actions.changeIsModalLoading(true))
         dispatch(createTask(title, description))
         if (error !== '') {
-            dispatch(modalSlice.actions.changeIsModalLoading(false))
-            dispatch(modalSlice.actions.closeModal())
             navigate('/error', {
                 state: {error: error},
             })
-        } else {
-            dispatch(modalSlice.actions.changeIsModalLoading(false))
-            dispatch(modalSlice.actions.closeModal())
         }
     }
 

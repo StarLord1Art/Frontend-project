@@ -19,9 +19,11 @@ export const modalSlice = createSlice({
     initialState,
     reducers: {
         closeModal(state) {
-            state.isOpen = false;
-            state.title = "";
-            state.description = "";
+            if (state.isOpen) {
+                state.isOpen = false;
+                state.title = "";
+                state.description = "";
+            }
         },
         openModal(state) {
             state.isOpen = true;
@@ -33,7 +35,9 @@ export const modalSlice = createSlice({
             state.description = action.payload;
         },
         changeIsModalLoading(state, action: PayloadAction<boolean>) {
-            state.isModalLoading = action.payload;
+            if (state.isOpen) {
+                state.isModalLoading = action.payload;
+            }
         }
     }
 })

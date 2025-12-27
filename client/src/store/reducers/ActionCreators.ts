@@ -1,6 +1,7 @@
 import {AppDispatch} from "../store";
 import {ITodo} from "../../models/ITodo";
 import {todoSlice} from "./slices/TodoSlice";
+import {modalSlice} from "./slices/ModalSlice";
 
 export const fetchTodos = () => (dispatch: AppDispatch) => {
     try {
@@ -18,6 +19,7 @@ export const fetchTodos = () => (dispatch: AppDispatch) => {
 
 export const createTask = (title: string, description: string) => (dispatch: AppDispatch) => {
     try {
+        dispatch(modalSlice.actions.changeIsModalLoading(true))
         fetch('/api/v1/tasks', {
             method: 'POST',
             mode: 'cors',
@@ -29,15 +31,20 @@ export const createTask = (title: string, description: string) => (dispatch: App
                 description: description,
             })
         }).then(res => res.json()).then((data: ITodo) => {
+            dispatch(modalSlice.actions.changeIsModalLoading(false))
+            dispatch(modalSlice.actions.closeModal())
             dispatch(todoSlice.actions.taskCreateSuccess(data))
         })
     } catch (err: any) {
+        dispatch(modalSlice.actions.changeIsModalLoading(false))
+        dispatch(modalSlice.actions.closeModal())
         dispatch(todoSlice.actions.taskCreateError(err.message))
     }
 }
 
 export const updateTask = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean, tags: string[]) => (dispatch: AppDispatch) => {
     try {
+        dispatch(modalSlice.actions.changeIsModalLoading(true))
         fetch('/api/v1/tasks', {
             method: 'PUT',
             mode: 'cors',
@@ -53,9 +60,13 @@ export const updateTask = (id: number, title: string, description: string, statu
                 tags: tags,
             })
         }).then(res => res.json()).then((data: ITodo) => {
+            dispatch(modalSlice.actions.changeIsModalLoading(false))
+            dispatch(modalSlice.actions.closeModal())
             dispatch(todoSlice.actions.taskUpdateSuccess(data))
         })
     } catch (err: any) {
+        dispatch(modalSlice.actions.changeIsModalLoading(false))
+        dispatch(modalSlice.actions.closeModal())
         dispatch(todoSlice.actions.taskUpdateError(err.message))
     }
 }

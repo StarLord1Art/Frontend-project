@@ -41,18 +41,13 @@ const Todo: React.FC = () => {
             showError();
             return
         }
-        dispatch(modalSlice.actions.changeIsModalLoading(true))
         dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed, false, state.todo.task.tags))
         if (error !== '') {
-            dispatch(modalSlice.actions.changeIsModalLoading(false))
-            dispatch(modalSlice.actions.closeModal())
             navigate('/error', {
                 state: { error: error },
             })
         } else {
-            dispatch(modalSlice.actions.changeIsModalLoading(false))
-            dispatch(modalSlice.actions.closeModal())
-            navigate('/');
+            // navigate('/');
         }
     }
 

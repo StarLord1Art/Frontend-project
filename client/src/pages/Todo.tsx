@@ -3,8 +3,7 @@ import {Breadcrumb, Layout, Typography, theme, Divider, Button, Tag, Input, mess
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {deleteTask, updateTask} from "../store/reducers/ActionCreators";
-import {modalSlice} from "../store/reducers/slices/ModalSlice";
-import {useAppDispatch, useAppSelector} from "../hooks/redux";
+import {useAppDispatch} from "../hooks/redux";
 import HeaderAntd from "../components/Header";
 import FooterAntd from "../components/Footer";
 import ModalAntd from '../components/Modal';
@@ -14,9 +13,12 @@ const {Title} = Typography;
 const { TextArea } = Input;
 
 const Todo: React.FC = () => {
-    const {state} = useLocation()
+    const {state} = useLocation();
     const dispatch = useAppDispatch();
-    const {isOpen, isModalLoading, title, description} = useAppSelector(state => state.ModalReducer);
+    const [title, setTitle] = React.useState(state.todo.task.title);
+    const [description, setDescription] = React.useState(state.todo.task.description);
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [isModalLoading, setIsModalLoading] = React.useState(false);
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -25,7 +27,9 @@ const Todo: React.FC = () => {
     } = theme.useToken();
 
     function handleCancel() {
-        dispatch(modalSlice.actions.closeModal())
+        setIsOpen(false);
+        setTitle(state.todo.task.title);
+        setDescription(state.todo.task.description);
     }
 
     const showError = () => {
@@ -40,7 +44,10 @@ const Todo: React.FC = () => {
             showError();
             return
         }
+        setIsModalLoading(true);
         dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed, false, state.todo.task.tags, navigate))
+        setIsModalLoading(false);
+        setIsOpen(false);
     }
 
     return (
@@ -82,7 +89,7 @@ const Todo: React.FC = () => {
                         </div>
                         <div>
                             <Button type={'primary'} onClick={() => {
-                                dispatch(modalSlice.actions.openModal())
+                                setIsOpen(true);
                             }} icon={<EditOutlined/>}>Редактировать</Button>
                             <Button type={'primary'} onClick={() => {
                                 dispatch(deleteTask(state.todo.id, navigate))
@@ -104,10 +111,10 @@ const Todo: React.FC = () => {
                             ]}
                         >
                             <Input value={title} onChange={(event) => {
-                                dispatch(modalSlice.actions.changeTitle(event.target.value))
+                                setTitle(event.target.value);
                             }} style={{marginBottom: "0.5rem"}} placeholder="Введите новое название задачи"/>
                             <TextArea value={description} onChange={(event) => {
-                                dispatch(modalSlice.actions.changeDescription(event.target.value))
+                                setDescription(event.target.value);
                             }} rows={4} placeholder="Введите новое описание задачи"/>
                         </ModalAntd>
                     </div>

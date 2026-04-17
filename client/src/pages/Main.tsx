@@ -49,7 +49,7 @@ const Main: React.FC = () => {
             return
         }
 
-        dispatch(createTask(title, description, navigate));
+        dispatch(createTask(title, description, navigate, setTitle, setDescription));
     }
 
     return (

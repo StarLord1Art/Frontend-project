@@ -60,7 +60,7 @@ const Todo: React.FC = () => {
                         <Link to={{pathname: "/"}}>Главная</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
-                        <Link to={{pathname: `todo/${state.todo.id}`}} state={{todo: state.todo}}>Задача</Link>
+                        <Link to={{pathname: `/todo/${state.todo.id}`}} state={{todo: state.todo}}>Задача</Link>
                     </Breadcrumb.Item>
                 </Breadcrumb>
                 <div

@@ -3,6 +3,7 @@ import {ITodo} from "../../models/ITodo";
 import {todoSlice} from "./slices/TodoSlice";
 import {modalSlice} from "./slices/ModalSlice";
 import {NavigateFunction} from "react-router-dom";
+import {Dispatch, SetStateAction} from "react";
 
 export const fetchTodos = (navigate: NavigateFunction) => (dispatch: AppDispatch) => {
     try {
@@ -19,7 +20,7 @@ export const fetchTodos = (navigate: NavigateFunction) => (dispatch: AppDispatch
     }
 }
 
-export const createTask = (title: string, description: string, navigate: NavigateFunction) => (dispatch: AppDispatch) => {
+export const createTask = (title: string, description: string, navigate: NavigateFunction, setTitle: Dispatch<SetStateAction<string>>, setDescription: Dispatch<SetStateAction<string>>) => (dispatch: AppDispatch) => {
     try {
         dispatch(modalSlice.actions.changeIsModalLoading(true))
         fetch('/api/v1/tasks', {
@@ -35,11 +36,15 @@ export const createTask = (title: string, description: string, navigate: Navigat
         }).then(res => res.json()).then((data: ITodo) => {
             dispatch(modalSlice.actions.changeIsModalLoading(false))
             dispatch(modalSlice.actions.closeModal())
+            setTitle('')
+            setDescription('')
             dispatch(todoSlice.actions.taskCreateSuccess(data))
         })
     } catch (err: any) {
         dispatch(modalSlice.actions.changeIsModalLoading(false))
         dispatch(modalSlice.actions.closeModal())
+        setTitle('')
+        setDescription('')
         dispatch(todoSlice.actions.taskCreateError(err.message))
         navigate('/error')
     }

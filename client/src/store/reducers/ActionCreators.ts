@@ -47,6 +47,7 @@ export const createTask = (title: string, description: string, navigate: Navigat
 
 export const updateTask = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean, tags: string[], navigate: NavigateFunction) => (dispatch: AppDispatch) => {
     try {
+        dispatch(modalSlice.actions.changeIsModalLoading(true))
         fetch('/api/v1/tasks', {
             method: 'PUT',
             mode: 'cors',
@@ -62,12 +63,17 @@ export const updateTask = (id: number, title: string, description: string, statu
                 tags: tags,
             })
         }).then(res => res.json()).then((data: ITodo) => {
+            dispatch(modalSlice.actions.changeIsModalLoading(false))
+            dispatch(modalSlice.actions.closeModal())
             dispatch(todoSlice.actions.taskUpdateSuccess(data))
+
             if (!isStatusUpdated) {
                 navigate('/')
             }
         })
     } catch (err: any) {
+        dispatch(modalSlice.actions.changeIsModalLoading(false))
+        dispatch(modalSlice.actions.closeModal())
         dispatch(todoSlice.actions.taskUpdateError(err.message))
         navigate('/error')
     }

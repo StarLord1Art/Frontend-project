@@ -1,12 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Breadcrumb, Layout, Typography, theme, Divider, Button, Tag, Input, message} from 'antd';
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {deleteTask, updateTask} from "../store/reducers/ActionCreators";
-import {useAppDispatch} from "../hooks/redux";
+import {useAppDispatch, useAppSelector} from "../hooks/redux";
 import HeaderAntd from "../components/Header";
 import FooterAntd from "../components/Footer";
 import ModalAntd from '../components/Modal';
+import {modalSlice} from "../store/reducers/slices/ModalSlice";
 
 const { Content } = Layout;
 const {Title} = Typography;
@@ -15,10 +16,9 @@ const { TextArea } = Input;
 const Todo: React.FC = () => {
     const {state} = useLocation();
     const dispatch = useAppDispatch();
-    const [title, setTitle] = React.useState(state.todo.task.title);
-    const [description, setDescription] = React.useState(state.todo.task.description);
-    const [isOpen, setIsOpen] = React.useState(false);
-    const [isModalLoading, setIsModalLoading] = React.useState(false);
+    const [newTitle, setNewTitle] = useState(state.todo.task.title);
+    const [newDescription, setNewDescription] = useState(state.todo.task.description);
+    const {isModalLoading, isOpen} = useAppSelector((state) => state.ModalReducer);
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -27,9 +27,9 @@ const Todo: React.FC = () => {
     } = theme.useToken();
 
     function handleCancel() {
-        setIsOpen(false);
-        setTitle(state.todo.task.title);
-        setDescription(state.todo.task.description);
+        dispatch(modalSlice.actions.closeModal());
+        setNewTitle(state.todo.task.title);
+        setNewDescription(state.todo.task.description);
     }
 
     const showError = () => {
@@ -40,14 +40,12 @@ const Todo: React.FC = () => {
     }
 
     function updateTodo() {
-        if (title.trim() === "") {
+        if (newTitle.trim() === "") {
             showError();
             return
         }
-        setIsModalLoading(true);
-        dispatch(updateTask(state.todo.id, title, description, state.todo.task.completed, false, state.todo.task.tags, navigate))
-        setIsModalLoading(false);
-        setIsOpen(false);
+
+        dispatch(updateTask(state.todo.id, newTitle, newDescription, state.todo.task.completed, false, state.todo.task.tags, navigate))
     }
 
     return (
@@ -68,7 +66,7 @@ const Todo: React.FC = () => {
                 <div
                     style={{
                         padding: 24,
-                        minHeight: 800,
+                        minHeight: '88vh',
                         background: colorBgContainer,
                         borderRadius: borderRadiusLG,
                     }}
@@ -77,8 +75,15 @@ const Todo: React.FC = () => {
                         <div>
                             <Title style={{justifySelf: 'left'}}>{state.todo.task.title}</Title>
                             <Divider/>
-                            <h2 style={{justifySelf: 'left'}}>Описание: {state.todo.task.description}</h2>
-                            <h2 style={{justifySelf: 'left'}}>Статус: {state.todo.task.completed ? 'Выполнено' : 'Не выполнено'}</h2>
+                            <h2 style={{justifySelf: 'left'}}>
+                                Описание: {state.todo.task.description === ""
+                                    ? "Отсутствует"
+                                    : state.todo.task.description
+                                }
+                            </h2>
+                            <h2 style={{justifySelf: 'left'}}>
+                                Статус: {state.todo.task.completed ? 'Выполнено' : 'Не выполнено'}
+                            </h2>
                             <div style={{display: 'flex', justifyContent: 'left'}}>
                                 {state.todo.task.tags?.map((tag: string) => (
                                     <span key={tag} style={{display: 'inline-block', marginRight: '0.5rem'}}>
@@ -89,12 +94,13 @@ const Todo: React.FC = () => {
                         </div>
                         <div>
                             <Button type={'primary'} onClick={() => {
-                                setIsOpen(true);
+                                dispatch(modalSlice.actions.openModal())
                             }} icon={<EditOutlined/>}>Редактировать</Button>
                             <Button type={'primary'} onClick={() => {
                                 dispatch(deleteTask(state.todo.id, navigate))
                             }} icon={<DeleteOutlined/>} style={{marginLeft: '0.5rem'}} danger>Удалить</Button>
                         </div>
+
                         <ModalAntd
                             title={"Редактирование задачи"}
                             open={isOpen}
@@ -110,13 +116,14 @@ const Todo: React.FC = () => {
                                 </Button>
                             ]}
                         >
-                            <Input value={title} onChange={(event) => {
-                                setTitle(event.target.value);
+                            <Input value={newTitle} onChange={(event) => {
+                                setNewTitle(event.target.value);
                             }} style={{marginBottom: "0.5rem"}} placeholder="Введите новое название задачи"/>
-                            <TextArea value={description} onChange={(event) => {
-                                setDescription(event.target.value);
+                            <TextArea value={newDescription} onChange={(event) => {
+                                setNewDescription(event.target.value);
                             }} rows={4} placeholder="Введите новое описание задачи"/>
                         </ModalAntd>
+
                     </div>
                 </div>
             </Content>

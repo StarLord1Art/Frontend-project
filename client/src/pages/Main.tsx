@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Breadcrumb, Layout, theme, Typography, Button, Input, message} from 'antd';
 import {PlusOutlined} from "@ant-design/icons";
 import {Link, useNavigate} from "react-router-dom";
@@ -16,12 +16,14 @@ const { TextArea } = Input;
 
 const Main: React.FC = () => {
     const dispatch = useAppDispatch();
-    const {isOpen, isModalLoading, title, description} = useAppSelector(state => state.ModalReducer);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const {isOpen, isModalLoading} = useAppSelector(state => state.ModalReducer);
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
-        dispatch(fetchTodos(navigate))
+        dispatch(fetchTodos(navigate));
     }, [dispatch, navigate])
 
     const {
@@ -29,7 +31,9 @@ const Main: React.FC = () => {
     } = theme.useToken();
 
     function handleCancel() {
-        dispatch(modalSlice.actions.closeModal())
+        dispatch(modalSlice.actions.closeModal());
+        setTitle('');
+        setDescription('');
     }
 
     const showError = () => {
@@ -44,7 +48,8 @@ const Main: React.FC = () => {
             showError();
             return
         }
-        dispatch(createTask(title, description, navigate))
+
+        dispatch(createTask(title, description, navigate));
     }
 
     return (
@@ -62,18 +67,26 @@ const Main: React.FC = () => {
                 <div
                     style={{
                         padding: 24,
-                        minHeight: 800,
+                        minHeight: '88vh',
                         background: colorBgContainer,
                         borderRadius: borderRadiusLG,
                     }}
                 >
-                    <div style={{marginTop: '5%'}}>
-                        <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+                    <div style={{marginTop: '2rem'}}>
+                        <div style={{display: 'flex', width: '50vw', margin: '0 auto', justifyContent: 'space-between'}}>
                             <Title>Все задачи</Title>
-                            <Button type={'text'} style={{alignSelf: 'center', marginTop: '2%'}} onClick={() => {
-                                dispatch(modalSlice.actions.openModal())
-                            }} icon={<PlusOutlined />}>Создать задачу</Button>
+                            <Button
+                                type={'text'}
+                                style={{alignSelf: 'center', marginTop: '1.25rem'}}
+                                onClick={() => {
+                                    dispatch(modalSlice.actions.openModal())
+                                }}
+                                icon={<PlusOutlined />}
+                            >
+                                Создать задачу
+                            </Button>
                         </div>
+
                         <ModalAntd
                             title={"Создание задачи"}
                             open={isOpen}
@@ -90,12 +103,13 @@ const Main: React.FC = () => {
                             ]}
                         >
                             <Input value={title} onChange={(event) => {
-                                dispatch(modalSlice.actions.changeTitle(event.target.value))
+                                setTitle(event.target.value);
                             }} style={{marginBottom: "0.5rem"}} placeholder="Введите название задачи"/>
                             <TextArea value={description} onChange={(event) => {
-                                dispatch(modalSlice.actions.changeDescription(event.target.value))
+                                setDescription(event.target.value);
                             }} rows={4} placeholder="Введите описание задачи"/>
                         </ModalAntd>
+
                         <TodoList/>
                     </div>
                 </div>

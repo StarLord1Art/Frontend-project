@@ -4,14 +4,6 @@ import {updateTask} from "../store/reducers/ActionCreators";
 import {useAppDispatch, useAppSelector} from "../hooks/redux";
 import {useNavigate} from "react-router-dom";
 
-const contentStyle: React.CSSProperties = {
-    padding: 50,
-    background: 'rgba(0, 0, 0, 0.05)',
-    borderRadius: 4,
-};
-
-const content = <div style={contentStyle} />;
-
 const TodoList: React.FC = () => {
     const dispatch = useAppDispatch();
     const {todos, isLoading} = useAppSelector(state => state.TodoReducer)
@@ -20,11 +12,11 @@ const TodoList: React.FC = () => {
     return(
         <>
             {isLoading
-                ? <Spin tip="Загрузка..." size="large">{content}</Spin>
+                ? <Spin size="large" style={{marginTop: '5rem'}}/>
                 : todos.length === 0
-                    ? <Empty style={{marginTop: '3%'}} description={<Typography.Text>Задач нет</Typography.Text>}/>
+                    ? <Empty style={{marginTop: '5rem'}} description={<Typography.Text>Задач нет</Typography.Text>}/>
                     : <List
-                        style={{width: '50%', margin: '0 auto'}}
+                        style={{width: '50vw', margin: '0 auto'}}
                         bordered
                         dataSource={todos}
                         renderItem={todo => (

@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.224.0/http/file_server.ts";
-import { Ollama } from 'ollama'
+import { Ollama } from 'npm:ollama@0.6.3';
 import { hash, compare } from "jsr:@core/bcrypt@0.4";
 import { makeJwt, setExpiration, verifyJwt } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 import { setCookie, getCookies } from "jsr:@std/http/cookie";

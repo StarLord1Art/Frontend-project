@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { Ollama } from 'ollama'
-import {compareSync, hashSync} from "bcryptjs";
+import { hash, compare } from "jsr:@core/bcrypt@0.4";
 import { makeJwt, setExpiration, verifyJwt } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 import { setCookie, getCookies } from "jsr:@std/http/cookie";
 
@@ -59,7 +59,7 @@ serve(async (req: Request) => {
                 return new Response("Пользователь уже существует", { status: 400 })
             }
 
-            const passwordHash = hashSync(data.password, 10);
+            const passwordHash = await hash(data.password, 10);
             await kv.set(key, { passwordHash, createdAt: Date.now() });
 
             return new Response("Пользователь успешно зарегистрирован", { status: 200 })
@@ -79,7 +79,8 @@ serve(async (req: Request) => {
             if (!user.value) {
                 return new Response("Пользователь не найден", { status: 404 });
             }
-            if (!compareSync(data.password, user.value.passwordHash)) {
+            const isValid = await compare(data.password, user.value.passwordHash);
+            if (!isValid) {
                 return new Response("Неверный пароль", { status: 400 });
             }
 

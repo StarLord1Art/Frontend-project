@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { Ollama } from 'npm:ollama@0.6.3';
 import bcrypt from "npm:bcryptjs@2.4.3";
-import { makeJwt, setExpiration, verifyJwt } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
+import { makeJwt, setExpiration, verifyJwt } from "https://deno.land/x/djwt@v2.9.0/mod.ts";
 import { setCookie, getCookies } from "jsr:@std/http/cookie";
 
 const kv = await Deno.openKv();

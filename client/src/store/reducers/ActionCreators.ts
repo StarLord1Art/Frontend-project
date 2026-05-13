@@ -11,6 +11,7 @@ export const fetchTodos = (navigate: NavigateFunction) => (dispatch: AppDispatch
         fetch('/api/v1/tasks', {
             method: 'GET',
             mode: 'cors',
+            credentials: 'include',
         }).then(res => res.json()).then((data: ITodo[]) => {
             dispatch(todoSlice.actions.todosFetchSuccess(data))
         })
@@ -26,6 +27,7 @@ export const createTask = (title: string, description: string, navigate: Navigat
         fetch('/api/v1/tasks', {
             method: 'POST',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -56,6 +58,7 @@ export const updateTask = (id: number, title: string, description: string, statu
         fetch('/api/v1/tasks', {
             method: 'PUT',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -89,6 +92,7 @@ export const deleteTask = (id: number, navigate: NavigateFunction) => (dispatch:
         fetch(`/api/v1/tasks?id=${id}`, {
             method: 'DELETE',
             mode: 'cors',
+            credentials: 'include',
         }).then(res => res.text()).then(() => {
             dispatch(todoSlice.actions.taskDeleteSuccess(id))
             navigate('/')

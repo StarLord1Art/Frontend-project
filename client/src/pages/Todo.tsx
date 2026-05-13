@@ -6,7 +6,7 @@ import {deleteTask, updateTask} from "../store/reducers/ActionCreators";
 import {useAppDispatch, useAppSelector} from "../hooks/redux";
 import HeaderAntd from "../components/Header";
 import FooterAntd from "../components/Footer";
-import ModalAntd from '../components/Modal';
+import ModalAntd from '../components/TaskModal';
 import {modalSlice} from "../store/reducers/slices/ModalSlice";
 
 const { Content } = Layout;

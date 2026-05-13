@@ -7,11 +7,12 @@ import {createTask, fetchTodos} from "../store/reducers/ActionCreators";
 import {modalSlice} from "../store/reducers/slices/ModalSlice";
 import HeaderAntd from "../components/Header";
 import FooterAntd from "../components/Footer";
-import ModalAntd from "../components/Modal";
+import ModalAntd from "../components/TaskModal";
 import TodoList from "../components/TodoList";
+import {authSlice, User} from "../store/reducers/slices/AuthSlice";
 
 const { Content } = Layout;
-const {Title} = Typography;
+const {Title, Text, Paragraph} = Typography;
 const { TextArea } = Input;
 
 const Main: React.FC = () => {
@@ -21,9 +22,27 @@ const Main: React.FC = () => {
     const {isOpen, isModalLoading} = useAppSelector(state => state.ModalReducer);
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
+    const {user} = useAppSelector(state => state.AuthReducer);
 
     useEffect(() => {
-        dispatch(fetchTodos(navigate));
+        fetch("/api/v1/me", {
+            method: "GET",
+            credentials: "include",
+            mode: "cors",
+        }).then((res) => {
+            if (res.status === 200) {
+                res.json().then((user: User) => {
+                    dispatch(authSlice.actions.loginSuccess(user));
+                    dispatch(fetchTodos(navigate));
+                });
+            } else if (res.status === 401) {
+                res.text().then(str => {
+                    console.log(str);
+                })
+            }
+        }).catch(err => {
+            console.log(err.message);
+        })
     }, [dispatch, navigate])
 
     const {
@@ -72,46 +91,58 @@ const Main: React.FC = () => {
                         borderRadius: borderRadiusLG,
                     }}
                 >
-                    <div style={{marginTop: '2rem'}}>
-                        <div style={{display: 'flex', width: '50vw', margin: '0 auto', justifyContent: 'space-between'}}>
-                            <Title>Все задачи</Title>
-                            <Button
-                                type={'text'}
-                                style={{alignSelf: 'center', marginTop: '1.25rem'}}
-                                onClick={() => {
-                                    dispatch(modalSlice.actions.openModal())
-                                }}
-                                icon={<PlusOutlined />}
-                            >
-                                Создать задачу
-                            </Button>
+                    {user === null ? (
+                        <div>
+                            <Title>Добро пожаловать!</Title>
+                            <Paragraph>
+                                Пожалуйста, зарегистрируйтесь и войдите в аккаунт, чтобы начать пользоваться приложением.
+                            </Paragraph>
+                            <Text type={"secondary"}>
+                                Проект создал Лепёшкин Артём Дмитриевич, студент второго курса ВШПИ МФТИ.
+                            </Text>
                         </div>
-
-                        <ModalAntd
-                            title={"Создание задачи"}
-                            open={isOpen}
-                            confirmLoading={isModalLoading}
-                            onOk={createTodo}
-                            onCancel={handleCancel}
-                            footer={[
-                                <Button key="back" onClick={handleCancel}>
-                                    Отменить
-                                </Button>,
-                                <Button key="submit" type="primary" loading={isModalLoading} onClick={createTodo}>
-                                    Создать
+                    ) : (
+                        <div style={{marginTop: '2rem'}}>
+                            <div style={{display: 'flex', width: '50vw', margin: '0 auto', justifyContent: 'space-between'}}>
+                                <Title>Все задачи</Title>
+                                <Button
+                                    type={'text'}
+                                    style={{alignSelf: 'center', marginTop: '1.25rem'}}
+                                    onClick={() => {
+                                        dispatch(modalSlice.actions.openModal())
+                                    }}
+                                    icon={<PlusOutlined />}
+                                >
+                                    Создать задачу
                                 </Button>
-                            ]}
-                        >
-                            <Input value={title} onChange={(event) => {
-                                setTitle(event.target.value);
-                            }} style={{marginBottom: "0.5rem"}} placeholder="Введите название задачи"/>
-                            <TextArea value={description} onChange={(event) => {
-                                setDescription(event.target.value);
-                            }} rows={4} placeholder="Введите описание задачи"/>
-                        </ModalAntd>
+                            </div>
 
-                        <TodoList/>
-                    </div>
+                            <ModalAntd
+                                title={"Создание задачи"}
+                                open={isOpen}
+                                confirmLoading={isModalLoading}
+                                onOk={createTodo}
+                                onCancel={handleCancel}
+                                footer={[
+                                    <Button key="back" onClick={handleCancel}>
+                                        Отменить
+                                    </Button>,
+                                    <Button key="submit" type="primary" loading={isModalLoading} onClick={createTodo}>
+                                        Создать
+                                    </Button>
+                                ]}
+                            >
+                                <Input value={title} onChange={(event) => {
+                                    setTitle(event.target.value);
+                                }} style={{marginBottom: "0.5rem"}} placeholder="Введите название задачи"/>
+                                <TextArea value={description} onChange={(event) => {
+                                    setDescription(event.target.value);
+                                }} rows={4} placeholder="Введите описание задачи"/>
+                            </ModalAntd>
+
+                            <TodoList/>
+                        </div>
+                    )}
                 </div>
             </Content>
             <FooterAntd/>

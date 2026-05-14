@@ -1,5 +1,6 @@
 {
-  "denoVersion": "2.1",
+  "denoVersion": "2.0",
+  "unstable": ["kv"],
   "imports": {
     "bcryptjs": "npm:bcryptjs@2.4.3",
     "@std/http": "jsr:@std/http@1",
@@ -11,5 +12,5 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "strict": true
   },
-  "nodeModulesDir": false
+  "nodeModulesDir": "none"
 }

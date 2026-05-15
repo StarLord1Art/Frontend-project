@@ -51,6 +51,32 @@ export const createTask = (title: string, description: string, navigate: Navigat
     }
 }
 
+export const updateTaskStatus = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean, tags: string[], navigate: NavigateFunction) => (dispatch: AppDispatch) => {
+    try {
+        fetch('/api/v1/tasks', {
+            method: 'PUT',
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: id,
+                newTitle: title,
+                newDescription: description,
+                newCompleted: status,
+                isStatusUpdated: isStatusUpdated,
+                tags: tags,
+            })
+        }).then(res => res.json()).then((data: ITodo) => {
+            dispatch(todoSlice.actions.taskUpdateSuccess(data))
+        })
+    } catch (error: any) {
+        dispatch(todoSlice.actions.taskUpdateError(error.message))
+        navigate('/error')
+    }
+}
+
 export const updateTask = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean, tags: string[], navigate: NavigateFunction, setIsOpen: Dispatch<SetStateAction<boolean>>, setIsModalLoading: Dispatch<SetStateAction<boolean>>) => (dispatch: AppDispatch) => {
     try {
         setIsModalLoading(true);
@@ -73,10 +99,7 @@ export const updateTask = (id: number, title: string, description: string, statu
             setIsModalLoading(false);
             setIsOpen(false);
             dispatch(todoSlice.actions.taskUpdateSuccess(data))
-
-            if (!isStatusUpdated) {
-                navigate('/')
-            }
+            navigate('/')
         })
     } catch (err: any) {
         setIsModalLoading(false);

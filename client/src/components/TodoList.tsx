@@ -1,6 +1,6 @@
 import React from "react";
 import {Checkbox, Empty, List, Spin, Tag, Typography} from "antd";
-import {updateTask} from "../store/reducers/ActionCreators";
+import {updateTaskStatus} from "../store/reducers/ActionCreators";
 import {useAppDispatch, useAppSelector} from "../hooks/redux";
 import {useNavigate} from "react-router-dom";
 
@@ -22,7 +22,7 @@ const TodoList: React.FC = () => {
                         renderItem={todo => (
                             <List.Item key={todo.id} style={{display: 'flex', justifyContent: 'left'}}>
                                 <Checkbox checked={todo.task.completed} onClick={() => {
-                                    dispatch(updateTask(todo.id, todo.task.title, todo.task.description, !todo.task.completed, true, todo.task.tags, navigate))
+                                    dispatch(updateTaskStatus(todo.id, todo.task.title, todo.task.description, !todo.task.completed, true, todo.task.tags, navigate))
                                 }}/>
                                 <span style={{cursor: 'pointer', marginLeft: '0.5rem'}} onClick={() => {
                                     navigate(`todo/${todo.id}`, {

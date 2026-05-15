@@ -1,7 +1,6 @@
 import {AppDispatch} from "../store";
 import {ITodo} from "../../models/ITodo";
 import {todoSlice} from "./slices/TodoSlice";
-import {modalSlice} from "./slices/ModalSlice";
 import {NavigateFunction} from "react-router-dom";
 import {Dispatch, SetStateAction} from "react";
 
@@ -21,9 +20,9 @@ export const fetchTodos = (navigate: NavigateFunction) => (dispatch: AppDispatch
     }
 }
 
-export const createTask = (title: string, description: string, navigate: NavigateFunction, setTitle: Dispatch<SetStateAction<string>>, setDescription: Dispatch<SetStateAction<string>>) => (dispatch: AppDispatch) => {
+export const createTask = (title: string, description: string, navigate: NavigateFunction, setTitle: Dispatch<SetStateAction<string>>, setDescription: Dispatch<SetStateAction<string>>, setIsOpen: Dispatch<SetStateAction<boolean>>, setIsModalLoading: Dispatch<SetStateAction<boolean>>) => (dispatch: AppDispatch) => {
     try {
-        dispatch(modalSlice.actions.changeIsModalLoading(true))
+        setIsModalLoading(true);
         fetch('/api/v1/tasks', {
             method: 'POST',
             mode: 'cors',
@@ -36,15 +35,15 @@ export const createTask = (title: string, description: string, navigate: Navigat
                 description: description,
             })
         }).then(res => res.json()).then((data: ITodo) => {
-            dispatch(modalSlice.actions.changeIsModalLoading(false))
-            dispatch(modalSlice.actions.closeModal())
+            setIsModalLoading(false);
+            setIsOpen(false);
             setTitle('')
             setDescription('')
             dispatch(todoSlice.actions.taskCreateSuccess(data))
         })
     } catch (err: any) {
-        dispatch(modalSlice.actions.changeIsModalLoading(false))
-        dispatch(modalSlice.actions.closeModal())
+        setIsModalLoading(false);
+        setIsOpen(false);
         setTitle('')
         setDescription('')
         dispatch(todoSlice.actions.taskCreateError(err.message))
@@ -52,9 +51,9 @@ export const createTask = (title: string, description: string, navigate: Navigat
     }
 }
 
-export const updateTask = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean, tags: string[], navigate: NavigateFunction) => (dispatch: AppDispatch) => {
+export const updateTask = (id: number, title: string, description: string, status: boolean, isStatusUpdated: boolean, tags: string[], navigate: NavigateFunction, setIsOpen: Dispatch<SetStateAction<boolean>>, setIsModalLoading: Dispatch<SetStateAction<boolean>>) => (dispatch: AppDispatch) => {
     try {
-        dispatch(modalSlice.actions.changeIsModalLoading(true))
+        setIsModalLoading(true);
         fetch('/api/v1/tasks', {
             method: 'PUT',
             mode: 'cors',
@@ -71,8 +70,8 @@ export const updateTask = (id: number, title: string, description: string, statu
                 tags: tags,
             })
         }).then(res => res.json()).then((data: ITodo) => {
-            dispatch(modalSlice.actions.changeIsModalLoading(false))
-            dispatch(modalSlice.actions.closeModal())
+            setIsModalLoading(false);
+            setIsOpen(false);
             dispatch(todoSlice.actions.taskUpdateSuccess(data))
 
             if (!isStatusUpdated) {
@@ -80,8 +79,8 @@ export const updateTask = (id: number, title: string, description: string, statu
             }
         })
     } catch (err: any) {
-        dispatch(modalSlice.actions.changeIsModalLoading(false))
-        dispatch(modalSlice.actions.closeModal())
+        setIsModalLoading(false);
+        setIsOpen(false);
         dispatch(todoSlice.actions.taskUpdateError(err.message))
         navigate('/error')
     }

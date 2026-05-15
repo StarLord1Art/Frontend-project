@@ -1,20 +1,25 @@
 import {Button, Form, Input, message, Modal, Tabs} from "antd";
-import React from "react";
-import {useAppDispatch, useAppSelector} from "../hooks/redux";
-import {modalSlice} from "../store/reducers/slices/ModalSlice";
+import React, {Dispatch, SetStateAction} from "react";
+import {useAppDispatch} from "../hooks/redux";
 import {authSlice, User} from "../store/reducers/slices/AuthSlice";
 import {fetchTodos} from "../store/reducers/ActionCreators";
 import {useNavigate} from "react-router-dom";
 
-const AuthModal: React.FC = () => {
+interface ModalProps {
+    isOpen: boolean;
+    isModalLoading: boolean;
+    setIsOpen: Dispatch<SetStateAction<boolean>>;
+    setIsModalLoading: Dispatch<SetStateAction<boolean>>;
+}
+
+const AuthModal: React.FC<ModalProps> = ({isOpen, isModalLoading, setIsOpen, setIsModalLoading}: ModalProps) => {
     const dispatch = useAppDispatch();
-    const {isOpen, isModalLoading} = useAppSelector(state => state.ModalReducer);
     const [loginForm] = Form.useForm();
     const [registerForm] = Form.useForm();
     const navigate = useNavigate();
 
     const handleLogin = async (values: {userName: string, password: string}) => {
-        dispatch(modalSlice.actions.changeIsModalLoading(true));
+        setIsModalLoading(true);
         fetch("/api/v1/signin", {
             method: "POST",
             mode: 'cors',
@@ -39,14 +44,14 @@ const AuthModal: React.FC = () => {
             dispatch(authSlice.actions.loginFail(err.message));
             message.error("Что-то пошло не так, попробуйте ещё раз");
         }).finally(() => {
-            dispatch(modalSlice.actions.changeIsModalLoading(false));
-            dispatch(modalSlice.actions.closeModal());
+            setIsModalLoading(false);
+            setIsOpen(false);
             loginForm.resetFields();
         })
     };
 
     const handleRegister = async (values: {userName: string, password: string}) => {
-        dispatch(modalSlice.actions.changeIsModalLoading(true));
+        setIsModalLoading(true);
         fetch("/api/v1/signup", {
             method: "POST",
             mode: 'cors',
@@ -68,8 +73,8 @@ const AuthModal: React.FC = () => {
             console.log(err.message);
             message.error("Что-то пошло не так, попробуйте ещё раз");
         }).finally(() => {
-            dispatch(modalSlice.actions.changeIsModalLoading(false));
-            dispatch(modalSlice.actions.closeModal());
+            setIsModalLoading(false);
+            setIsOpen(false);
             registerForm.resetFields();
         })
     };
@@ -79,7 +84,7 @@ const AuthModal: React.FC = () => {
             open={isOpen}
             confirmLoading={isModalLoading}
             onCancel={() => {
-                dispatch(modalSlice.actions.closeModal());
+                setIsOpen(false);
                 registerForm.resetFields();
                 loginForm.resetFields();
             }}

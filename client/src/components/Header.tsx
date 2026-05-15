@@ -1,7 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import {Button, Layout, message} from "antd"
 import {useAppDispatch, useAppSelector} from "../hooks/redux";
-import {modalSlice} from "../store/reducers/slices/ModalSlice";
 import AuthModal from "./AuthModal";
 import {authSlice} from "../store/reducers/slices/AuthSlice";
 import {useNavigate} from "react-router-dom";
@@ -12,9 +11,11 @@ const HeaderAntd: React.FC = () => {
     const dispatch = useAppDispatch();
     const {user, loading} = useAppSelector(state => state.AuthReducer);
     const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
+    const [isModalLoading, setIsModalLoading] = useState(false);
 
     function login() {
-        dispatch(modalSlice.actions.openModal());
+        setIsOpen(true);
     }
 
     async function logout() {
@@ -56,7 +57,12 @@ const HeaderAntd: React.FC = () => {
                 </Button>
             </Header>
 
-            <AuthModal />
+            <AuthModal
+                isOpen={isOpen}
+                isModalLoading={isModalLoading}
+                setIsOpen={setIsOpen}
+                setIsModalLoading={setIsModalLoading}
+            />
         </>
     )
 }

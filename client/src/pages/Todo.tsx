@@ -3,11 +3,10 @@ import {Breadcrumb, Layout, Typography, theme, Divider, Button, Tag, Input, mess
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {deleteTask, updateTask} from "../store/reducers/ActionCreators";
-import {useAppDispatch, useAppSelector} from "../hooks/redux";
+import {useAppDispatch} from "../hooks/redux";
 import HeaderAntd from "../components/Header";
 import FooterAntd from "../components/Footer";
 import ModalAntd from '../components/TaskModal';
-import {modalSlice} from "../store/reducers/slices/ModalSlice";
 
 const { Content } = Layout;
 const {Title} = Typography;
@@ -18,7 +17,8 @@ const Todo: React.FC = () => {
     const dispatch = useAppDispatch();
     const [newTitle, setNewTitle] = useState(state.todo.task.title);
     const [newDescription, setNewDescription] = useState(state.todo.task.description);
-    const {isModalLoading, isOpen} = useAppSelector((state) => state.ModalReducer);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isModalLoading, setIsModalLoading] = useState(false);
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -27,7 +27,7 @@ const Todo: React.FC = () => {
     } = theme.useToken();
 
     function handleCancel() {
-        dispatch(modalSlice.actions.closeModal());
+        setIsOpen(false);
         setNewTitle(state.todo.task.title);
         setNewDescription(state.todo.task.description);
     }
@@ -45,7 +45,7 @@ const Todo: React.FC = () => {
             return
         }
 
-        dispatch(updateTask(state.todo.id, newTitle, newDescription, state.todo.task.completed, false, state.todo.task.tags, navigate))
+        dispatch(updateTask(state.todo.id, newTitle, newDescription, state.todo.task.completed, false, state.todo.task.tags, navigate, setIsOpen, setIsModalLoading))
     }
 
     return (
@@ -94,7 +94,7 @@ const Todo: React.FC = () => {
                         </div>
                         <div>
                             <Button type={'primary'} onClick={() => {
-                                dispatch(modalSlice.actions.openModal())
+                                setIsOpen(true);
                             }} icon={<EditOutlined/>}>Редактировать</Button>
                             <Button type={'primary'} onClick={() => {
                                 dispatch(deleteTask(state.todo.id, navigate))

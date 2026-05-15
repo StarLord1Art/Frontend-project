@@ -4,7 +4,6 @@ import {PlusOutlined} from "@ant-design/icons";
 import {Link, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks/redux";
 import {createTask, fetchTodos} from "../store/reducers/ActionCreators";
-import {modalSlice} from "../store/reducers/slices/ModalSlice";
 import HeaderAntd from "../components/Header";
 import FooterAntd from "../components/Footer";
 import ModalAntd from "../components/TaskModal";
@@ -19,7 +18,8 @@ const Main: React.FC = () => {
     const dispatch = useAppDispatch();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const {isOpen, isModalLoading} = useAppSelector(state => state.ModalReducer);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isModalLoading, setIsModalLoading] = useState(false);
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
     const {user} = useAppSelector(state => state.AuthReducer);
@@ -50,7 +50,7 @@ const Main: React.FC = () => {
     } = theme.useToken();
 
     function handleCancel() {
-        dispatch(modalSlice.actions.closeModal());
+        setIsOpen(false);
         setTitle('');
         setDescription('');
     }
@@ -68,7 +68,7 @@ const Main: React.FC = () => {
             return
         }
 
-        dispatch(createTask(title, description, navigate, setTitle, setDescription));
+        dispatch(createTask(title, description, navigate, setTitle, setDescription, setIsOpen, setIsModalLoading));
     }
 
     return (
@@ -109,7 +109,7 @@ const Main: React.FC = () => {
                                     type={'text'}
                                     style={{alignSelf: 'center', marginTop: '1.25rem'}}
                                     onClick={() => {
-                                        dispatch(modalSlice.actions.openModal())
+                                        setIsOpen(true);
                                     }}
                                     icon={<PlusOutlined />}
                                 >

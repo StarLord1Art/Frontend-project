@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { Ollama } from 'npm:ollama@0.6.3';
 import bcrypt from "npm:bcryptjs@2.4.3";
-import { makeJwt, setExpiration, verifyJwt } from "https://deno.land/x/djwt@v2.8.0/mod.ts";
+import { create, verify, type Payload } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 import { setCookie, getCookies } from "jsr:@std/http/cookie";
 
 const kv = await Deno.openKv();
@@ -14,13 +14,26 @@ const ollama = new Ollama({
 const JWT_SECRET = Deno.env.get("JWT_SECRET");
 const JWT_HEADER = { alg: "HS256", typ: "JWT" };
 
+async function importKey(secret: string): Promise<CryptoKey> {
+    const enc = new TextEncoder();
+    return await crypto.subtle.importKey(
+        "raw",
+        enc.encode(secret),
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["sign", "verify"]
+    );
+}
+
 export async function requireAuth(req: Request): Promise<string | null> {
     const cookies = getCookies(req.headers);
     const token = cookies.auth_token;
     if (!token) return null;
 
     try {
-        const payload = await verifyJwt(token, JWT_SECRET, JWT_HEADER);
+        const cryptoKey = await importKey(JWT_SECRET!);
+        const payload = await verify(token, cryptoKey);
+
         return payload.sub as string;
     } catch {
         return null;
@@ -84,9 +97,13 @@ serve(async (req: Request) => {
                     return new Response("Неверный пароль", { status: 400 });
                 }
 
-                const payload = { sub: data.userName };
-                setExpiration(payload, "8h");
-                const token = await makeJwt({ header: JWT_HEADER, payload, key: JWT_SECRET });
+                const payload: Payload = {
+                    sub: data.userName,
+                    exp: Math.floor(Date.now() / 1000) + 8 * 60 * 60
+                };
+
+                const cryptoKey = await importKey(JWT_SECRET!);
+                const token = await create(JWT_HEADER, payload, cryptoKey);
 
                 const headers = new Headers();
                 setCookie(headers, {

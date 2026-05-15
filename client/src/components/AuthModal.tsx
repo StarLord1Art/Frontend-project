@@ -25,7 +25,7 @@ const AuthModal: React.FC = () => {
             body: JSON.stringify(values),
         }).then(res => {
             if (res.status === 200) {
-                res.json().then((user: User)=> {
+                res.json().then((user: User) => {
                     dispatch(authSlice.actions.loginSuccess(user));
                     dispatch(fetchTodos(navigate));
                 })

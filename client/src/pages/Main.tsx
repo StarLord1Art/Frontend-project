@@ -37,7 +37,7 @@ const Main: React.FC = () => {
                 });
             } else if (res.status === 401) {
                 res.text().then(str => {
-                    console.log(str);
+                    dispatch(authSlice.actions.loginFail(str));
                 })
             }
         }).catch(err => {

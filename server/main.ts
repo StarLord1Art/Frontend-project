@@ -12,7 +12,7 @@ const ollama = new Ollama({
 })
 
 const JWT_SECRET = Deno.env.get("JWT_SECRET");
-const JWT_HEADER = { alg: "HS256", type: "JWT" };
+const JWT_HEADER = { alg: "HS256", typ: "JWT" };
 
 export async function requireAuth(req: Request): Promise<string | null> {
     const cookies = getCookies(req.headers);

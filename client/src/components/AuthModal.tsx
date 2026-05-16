@@ -40,7 +40,6 @@ const AuthModal: React.FC<ModalProps> = ({isOpen, isModalLoading, setIsOpen, set
                 })
             }
         }).catch(err => {
-            console.log(err.message);
             dispatch(authSlice.actions.loginFail(err.message));
             message.error("Что-то пошло не так, попробуйте ещё раз");
         }).finally(() => {
@@ -69,8 +68,7 @@ const AuthModal: React.FC<ModalProps> = ({isOpen, isModalLoading, setIsOpen, set
                     message.error(str);
                 })
             }
-        }).catch(err => {
-            console.log(err.message);
+        }).catch(() => {
             message.error("Что-то пошло не так, попробуйте ещё раз");
         }).finally(() => {
             setIsModalLoading(false);
@@ -132,6 +130,7 @@ const AuthModal: React.FC<ModalProps> = ({isOpen, isModalLoading, setIsOpen, set
                                     type="primary"
                                     block
                                     htmlType="submit"
+                                    loading={isModalLoading}
                                 >
                                     Войти
                                 </Button>
@@ -212,6 +211,7 @@ const AuthModal: React.FC<ModalProps> = ({isOpen, isModalLoading, setIsOpen, set
                                     type="primary"
                                     htmlType="submit"
                                     block
+                                    loading={isModalLoading}
                                 >
                                     Зарегистрироваться
                                 </Button>

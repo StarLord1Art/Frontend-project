@@ -41,7 +41,7 @@ const Main: React.FC = () => {
                 })
             }
         }).catch(err => {
-            console.log(err.message);
+            dispatch(authSlice.actions.loginFail(err.message));
         })
     }, [dispatch, navigate])
 

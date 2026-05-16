@@ -28,7 +28,6 @@ const HeaderAntd: React.FC = () => {
             dispatch(authSlice.actions.logoutSuccess());
             navigate("/");
         }).catch(err => {
-            console.log(err.message);
             dispatch(authSlice.actions.logoutFail(err.message));
             message.error("Что-то пошло не так, попробуйте ещё раз");
         })

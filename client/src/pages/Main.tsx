@@ -97,9 +97,19 @@ const Main: React.FC = () => {
                             <Paragraph>
                                 Пожалуйста, зарегистрируйтесь и войдите в аккаунт, чтобы начать пользоваться приложением.
                             </Paragraph>
-                            <Text type={"secondary"}>
-                                Проект создал Лепёшкин Артём Дмитриевич, студент второго курса ВШПИ МФТИ.
-                            </Text>
+                            <Paragraph>
+                                <Text type={"secondary"}>
+                                    Проект создал Лепёшкин Артём Дмитриевич, студент второго курса ВШПИ МФТИ, группа Б13-401.
+                                </Text>
+                            </Paragraph>
+                            <Paragraph>
+                                <a href={"https://github.com/StarLord1Art/Frontend-project"} target={"_blank"} style={{marginRight: '3rem'}}>
+                                    Ссылка на репозиторий проекта
+                                </a>
+                                <a href={"https://github.com/StarLord1Art/Frontend-project/archive/refs/heads/main.zip"}>
+                                    Ссылка на скачивание архива с кодом
+                                </a>
+                            </Paragraph>
                         </div>
                     ) : (
                         <div style={{marginTop: '2rem'}}>

@@ -103,7 +103,12 @@ const Main: React.FC = () => {
                                 </Text>
                             </Paragraph>
                             <Paragraph>
-                                <a href={"https://github.com/StarLord1Art/Frontend-project"} target={"_blank"} style={{marginRight: '3rem'}}>
+                                <a
+                                    href={"https://github.com/StarLord1Art/Frontend-project"}
+                                    target={"_blank"}
+                                    rel={"noreferrer"}
+                                    style={{marginRight: '3rem'}}
+                                >
                                     Ссылка на репозиторий проекта
                                 </a>
                                 <a href={"https://github.com/StarLord1Art/Frontend-project/archive/refs/heads/main.zip"}>
